@@ -19,6 +19,7 @@ package admission
 import (
 	"fmt"
 	"io/ioutil"
+	"k8s.io/apiserver/pkg/endpoints/handlers/negotiation"
 	"net/http"
 
 	admissionv1beta1 "k8s.io/api/admission/v1beta1"
@@ -91,7 +92,9 @@ func ServePizzaValidation(informers restaurantinformers.SharedInformerFactory) f
 					Message: err.Error(),
 					Status:  metav1.StatusFailure,
 				}
-				responsewriters.WriteObject(http.StatusOK, gvk.GroupVersion(), codecs, review, w, req)
+				// @TODO: Pending version update check
+				responsewriters.WriteObjectNegotiated(codecs, negotiation.DefaultEndpointRestrictions, gvk.GroupVersion(), w, req, http.StatusOK, review)
+				//responsewriters.WriteObject(http.StatusOK, gvk.GroupVersion(), codecs, review, w, req)
 				return
 			}
 		}
@@ -107,7 +110,9 @@ func ServePizzaValidation(informers restaurantinformers.SharedInformerFactory) f
 						Message: fmt.Sprintf("topping %q not known", topping),
 						Status:  metav1.StatusFailure,
 					}
-					responsewriters.WriteObject(http.StatusOK, gvk.GroupVersion(), codecs, review, w, req)
+					// @TODO: Pending version update check
+					responsewriters.WriteObjectNegotiated(codecs, negotiation.DefaultEndpointRestrictions, gvk.GroupVersion(), w, req, http.StatusOK, review)
+					//responsewriters.WriteObject(http.StatusOK, gvk.GroupVersion(), codecs, review, w, req)
 					return
 				}
 			}
@@ -122,7 +127,9 @@ func ServePizzaValidation(informers restaurantinformers.SharedInformerFactory) f
 						Message: fmt.Sprintf("topping %q not known", topping),
 						Status:  metav1.StatusFailure,
 					}
-					responsewriters.WriteObject(http.StatusOK, gvk.GroupVersion(), codecs, review, w, req)
+					// @TODO: Pending version update check
+					responsewriters.WriteObjectNegotiated(codecs, negotiation.DefaultEndpointRestrictions, gvk.GroupVersion(), w, req, http.StatusOK, review)
+					//responsewriters.WriteObject(http.StatusOK, gvk.GroupVersion(), codecs, review, w, req)
 					return
 				}
 			}
@@ -133,6 +140,8 @@ func ServePizzaValidation(informers restaurantinformers.SharedInformerFactory) f
 				Status:  metav1.StatusFailure,
 			}
 		}
-		responsewriters.WriteObject(http.StatusOK, gvk.GroupVersion(), codecs, review, w, req)
+		// @TODO: Pending version update check
+		responsewriters.WriteObjectNegotiated(codecs, negotiation.DefaultEndpointRestrictions, gvk.GroupVersion(), w, req, http.StatusOK, review)
+		//responsewriters.WriteObject(http.StatusOK, gvk.GroupVersion(), codecs, review, w, req)
 	}
 }

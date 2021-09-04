@@ -20,6 +20,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"k8s.io/apiserver/pkg/endpoints/handlers/negotiation"
 	"net/http"
 
 	"github.com/appscode/jsonpatch"
@@ -69,7 +70,9 @@ func ServePizzaAdmit(w http.ResponseWriter, req *http.Request) {
 				Message: err.Error(),
 				Status:  metav1.StatusFailure,
 			}
-			responsewriters.WriteObject(http.StatusOK, gvk.GroupVersion(), codecs, review, w, req)
+			// @TODO: Pending Recover
+			//responsewriters.WriteObject(http.StatusOK, gvk.GroupVersion(), codecs, review, w, req)
+			responsewriters.WriteObjectNegotiated(codecs, negotiation.DefaultEndpointRestrictions, gvk.GroupVersion(), w, req, http.StatusOK, review)
 			return
 		}
 	}
@@ -108,7 +111,9 @@ func ServePizzaAdmit(w http.ResponseWriter, req *http.Request) {
 			Message: fmt.Sprintf("unexpected type %T", review.Request.Object.Object),
 			Status:  metav1.StatusFailure,
 		}
-		responsewriters.WriteObject(http.StatusOK, gvk.GroupVersion(), codecs, review, w, req)
+		// @TODO: pending update verification
+		//responsewriters.WriteObject(http.StatusOK, gvk.GroupVersion(), codecs, review, w, req)
+		responsewriters.WriteObjectNegotiated(codecs, negotiation.DefaultEndpointRestrictions, gvk.GroupVersion(), w, req, http.StatusOK, review)
 		return
 	}
 
@@ -129,5 +134,7 @@ func ServePizzaAdmit(w http.ResponseWriter, req *http.Request) {
 	review.Response.PatchType = &typ
 	review.Response.Allowed = true
 
-	responsewriters.WriteObject(http.StatusOK, gvk.GroupVersion(), codecs, review, w, req)
+	// @TODO: Pending version update check
+	responsewriters.WriteObjectNegotiated(codecs, negotiation.DefaultEndpointRestrictions, gvk.GroupVersion(), w, req, http.StatusOK, review)
+//	responsewriters.WriteObject(http.StatusOK, gvk.GroupVersion(), codecs, review, w, req)
 }

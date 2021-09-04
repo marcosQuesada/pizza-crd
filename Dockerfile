@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM golang:1.12 as build
-WORKDIR /go/src/github.com/programming-kubernetes/pizza-crd
+FROM golang:1.16.3 as build
+WORKDIR /go/src/github.com/marcosQuesada/pizza-crd
 COPY . .
 RUN CGO_ENABLED=0 GOOS=linux go build ./cmd/pizza-crd-webhook
 
 FROM alpine:latest
 RUN apk --no-cache add ca-certificates
-COPY --from=build /go/src/github.com/programming-kubernetes/pizza-crd/pizza-crd-webhook /
+COPY --from=build /go/src/github.com/marcosQuesada/pizza-crd/pizza-crd-webhook /
 ENTRYPOINT ["/pizza-crd-webhook"]

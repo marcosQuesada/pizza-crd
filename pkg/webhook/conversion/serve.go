@@ -19,6 +19,7 @@ package conversion
 import (
 	"fmt"
 	"io/ioutil"
+	"k8s.io/apiserver/pkg/endpoints/handlers/negotiation"
 	"net/http"
 
 	apiextensionsv1beta1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1"
@@ -105,6 +106,8 @@ func Serve(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 
+	// write negotiated response // @TODO: verify vesion update
+	responsewriters.WriteObjectNegotiated(codecs, negotiation.DefaultEndpointRestrictions, gvk.GroupVersion(), w, req, http.StatusOK, review)
 	// write negotiated response
-	responsewriters.WriteObject(http.StatusOK, gvk.GroupVersion(), codecs, review, w, req)
+	//responsewriters.WriteObject(http.StatusOK, gvk.GroupVersion(), codecs, review, w, req)
 }

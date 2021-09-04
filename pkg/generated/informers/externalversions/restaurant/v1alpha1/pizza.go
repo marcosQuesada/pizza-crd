@@ -19,6 +19,7 @@ limitations under the License.
 package v1alpha1
 
 import (
+	"context"
 	time "time"
 
 	restaurantv1alpha1 "github.com/programming-kubernetes/pizza-crd/pkg/apis/restaurant/v1alpha1"
@@ -61,13 +62,13 @@ func NewFilteredPizzaInformer(client versioned.Interface, namespace string, resy
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.RestaurantV1alpha1().Pizzas(namespace).List(options)
+				return client.RestaurantV1alpha1().Pizzas(namespace).List(context.Background(), options)
 			},
 			WatchFunc: func(options v1.ListOptions) (watch.Interface, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.RestaurantV1alpha1().Pizzas(namespace).Watch(options)
+				return client.RestaurantV1alpha1().Pizzas(namespace).Watch(context.Background(), options)
 			},
 		},
 		&restaurantv1alpha1.Pizza{},
